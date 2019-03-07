@@ -1,0 +1,23 @@
+#!/bin/tcsh
+#SBATCH --time=300:00:00
+#SBATCH --mem=24000
+#SBATCH --output=results
+#SBATCH --cores=6
+
+
+
+#Type into command line
+#foreach subj (AES101 AES102 AES104 AES107 AES108 AES109 AES110 AES111 AES113 AES114 AES115 AES116 AES117 AES118 AES119 AES120 AES121 AES122 AES123 AES124 AES126 AES127 AES129 AES130 AES133 AES134 AES136 AES137 AES138 AES139)
+# sbatch recon-all_bswift.sh ${subj}
+# end
+
+set echo
+set subj= ($argv[1])
+set subj= ($argv[2])
+setenv SUBJECTS_DIR /homes/dcallow/freesurfer
+
+recon-all -base ${subj} -tp Ex.${subj} -tp Rest.${subj} -all
+
+recon-all -long ${cond}.${subj} ${subj} -all
+
+longHippoSubfieldsT1.sh ${subj}
