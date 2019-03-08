@@ -13,7 +13,7 @@
 
 set echo
 set subj= ($argv[1])
-set subj= ($argv[2])
+set cond= ($argv[2])
 setenv SUBJECTS_DIR /homes/dcallow/freesurfer
 
 recon-all -base ${subj} -tp Ex.${subj} -tp Rest.${subj} -all
