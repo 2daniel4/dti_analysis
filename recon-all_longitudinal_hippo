@@ -15,9 +15,15 @@ set echo
 set subj= ($argv[1])
 set cond= ($argv[2])
 setenv SUBJECTS_DIR /homes/dcallow/freesurfer
-
+#===================Must Run These Seperately=====================================
+#create base template for longitudinal images
 recon-all -base base_${subj} -tp Ex.${subj} -tp Rest.${subj} -all
 
+#===================Must Run These Seperately=====================================
+#create longitudinal images
 recon-all -long ${cond}.${subj} base_${subj} -all
 
+#===================Must Run These Seperately=====================================
+
+#Create Hippocampal subfields
 longHippoSubfieldsT1.sh base_${subj}
