@@ -1,9 +1,11 @@
 #!/bin/tcsh
 
+#Set freesurfer environment - If don't set in command line or here all freesurfer functions will be unknown 
 setenv FREESURFER_HOME /Applications/freesurfer/
 source $FREESURFER_HOME/SetUpFreeSurfer.csh
 
-#Must set SUBJECTS_DIR to where data is or else uses what was set up when installing freesurfer (Should have the anatomical outputs from freesurfer under this subj_dir)
+#Must set SUBJECTS_DIR to where data is or else uses what was set up when installing freesurfer 
+#Should have the anatomical outputs from freesurfer under this subj_dir
 setenv SUBJECTS_DIR /path/2/subj_dir
 
 #setenv to location where analysis is being run
@@ -13,17 +15,18 @@ setenv home /Volumes/DANIEL/
 
 echo "-------------------------------------------------------------------------------------------------"
 
+#make directories for analysis
 cd home
 mkdir dti_freesurf
 cd home/dti_freesurf
 mkdir diffusion_recons
 cd home
 
-#list all subjects for the for loop inside ().
+#list all subjects inside ().
 foreach subj ()
 
-#list all condition
-foreach cond (Ex)
+#list all conditions for each subject
+foreach cond ()
 
 echo "subj = " ${subj} ", cond = " ${cond}
 
@@ -34,7 +37,7 @@ cd /path/2/subj_dir/${subj}_${cond}
 
 cp DICOMS/*.dcm /path/2/subj_dir/${subj}_${cond}
 
-#Convert into DCM (don't always need this step)
+#Convert into DCM (don't always need this step) but I like to do it to debug
 cd /path/2/subj_dir/${subj}_${cond}/
 mri_convert image000001.dcm /path/2/subj_dir/${subj}_${cond}/dwi.nii.gz
 
@@ -44,3 +47,6 @@ dt_recon --sd /path/2/subj_dir --i /path/2/subj_dir/${subj}_${cond}/image000001.
 end
 
 end
+
+#------------------------------------------------------------------------------------------------------
+echo Complete: Make sure to check all registrations (lowb to anat) and if errors persist run bbregister independently on the trouble images
