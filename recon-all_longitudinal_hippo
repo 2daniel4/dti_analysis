@@ -1,4 +1,6 @@
 #!/bin/tcsh
+
+#####For Slurm Submission parameters
 #SBATCH --time=300:00:00
 #SBATCH --mem=24000
 #SBATCH --output=results
@@ -6,24 +8,30 @@
 
 
 
-#Type into command line
-#foreach subj (AES101 AES102 AES104 AES107 AES108 AES109 AES110 AES111 AES113 AES114 AES115 AES116 AES117 AES118 AES119 AES120 AES121 AES122 AES123 AES124 AES126 AES127 AES129 AES130 AES133 AES134 AES136 AES137 AES138 AES139)
-# sbatch recon-all_bswift.sh ${subj}
+#Slurm Submission Type into Command Line
+#foreach subj (subject names)
+#foreach cond (conditions for each subject)
+# sbatch recon-all_bswift.sh ${subj} ${cond}
 # end
 
 set echo
+
+#first two arguments provided and used to set variable for code
 set subj= ($argv[1])
 set cond= ($argv[2])
+
+#set subject directory
 setenv SUBJECTS_DIR /homes/dcallow/freesurfer
+
 #===================Must Run These Seperately=====================================
 #create base template for longitudinal images
 recon-all -base base_${subj} -tp Ex.${subj} -tp Rest.${subj} -all
 
-#===================Must Run These Seperately=====================================
+#===================Must Run These Seperately (All of first jobs must begin before using)=====================================
 #create longitudinal images
 recon-all -long ${cond}.${subj} base_${subj} -all
 
-#===================Must Run These Seperately=====================================
+#===================Must Run These Seperately (All of previous code must have run before using) =====================================
 
 #Create Hippocampal subfields
 longHippoSubfieldsT1.sh base_${subj}
