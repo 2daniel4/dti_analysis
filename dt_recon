@@ -43,8 +43,8 @@ cp DICOMS/*.dcm /path/2/subj_dir/${subj}_${cond}
 
 #May need to copy surf, label, and mri folder from anatomical freesurfer output
 cp -R /path/2/freesurfer/data/mri /path/2/subj_dir/${subj}_${cond}/
-cp -R /path/2/freesurfer/data//surf /path/2/subj_dir/${subj}_${cond}/surf
-cp -R /path/2/freesurfer/data/label /path/2/subj_dir/${subj}_${cond}/label
+cp -R /path/2/freesurfer/data//surf /path/2/subj_dir/${subj}_${cond}/
+cp -R /path/2/freesurfer/data/label /path/2/subj_dir/${subj}_${cond}/
 
 #Convert into DCM (don't always need this step) but I like to do it to debug
 cd /path/2/subj_dir/${subj}_${cond}/
