@@ -1,6 +1,7 @@
 #!/bin/tcsh
 
-#Set freesurfer environment - If don't set in command line or here all freesurfer functions will be unknown 
+#Set freesurfer environment - If don't set in command line or here all freesurfer functions will be unknown
+#Path is to where you downloaded freesurfer
 setenv FREESURFER_HOME /Applications/freesurfer/
 source $FREESURFER_HOME/SetUpFreeSurfer.csh
 
@@ -8,7 +9,7 @@ source $FREESURFER_HOME/SetUpFreeSurfer.csh
 #Should have the anatomical outputs from freesurfer under this subj_dir
 setenv SUBJECTS_DIR /path/2/subj_dir
 
-#Otherwise copy over mri, surf, and label folders into new working direcroty with Dicoms
+#Otherwise copy over mri, surf, and label folders into new working direcroty with DTI Dicoms
 
 #setenv to location where analysis is being run
 setenv home /Volumes/DANIEL/
@@ -41,7 +42,7 @@ cd /path/2/subj_dir/${subj}_${cond}
 
 cp DICOMS/*.dcm /path/2/subj_dir/${subj}_${cond}
 
-#May need to copy surf, label, and mri folder from anatomical freesurfer output
+#May need to copy surf, label, and mri folder from anatomical freesurfer (recon-all) output
 cp -R /path/2/freesurfer/data/mri /path/2/subj_dir/${subj}_${cond}/
 cp -R /path/2/freesurfer/data//surf /path/2/subj_dir/${subj}_${cond}/
 cp -R /path/2/freesurfer/data/label /path/2/subj_dir/${subj}_${cond}/
