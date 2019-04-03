@@ -6,6 +6,10 @@
 #SBATCH --output=results
 #SBATCH --cores=6
 
+#Type this into the command line before submitting and to submit
+#Depending on infrastructure may need to type these module load commands into command line before running this code.
+#module load freesurfer
+#module load matlab/2012b
 
 
 #Slurm Submission Type into Command Line
