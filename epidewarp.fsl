@@ -122,6 +122,8 @@ else
   exit 1;
 endif
 
+#Added else second to last else statement so that FSLVersions 6.X would also run
+
 # Create a log file
 if($#LF == 0) set LF = $vsm.log
 if(-e $LF) mv $LF $LF.bak
