@@ -916,7 +916,7 @@ else				#--->>> Multiple time points for each subject
       set cmd = ()
       @ iproc = 1
       while ($iproc <= $#proclist)
-        set cmd = ($cmd trac-preproc)
+        set cmd = ($cmd /Volumes/DANIEL/trac-preproc)
         set cmd = ($cmd -c $RCFlist[$iproc])
         set cmd = ($cmd -log $LFlist[$iproc])
         set cmd = ($cmd -cmd $CFlist[$iproc])
