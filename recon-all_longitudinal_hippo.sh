@@ -37,8 +37,8 @@ recon-all -long ${cond}.${subj} base_${subj} -all
 
 #===================Must Run These Seperately (All of previous code must have run before using) =====================================
 
-#Create Hippocampal subfields
-longHippoSubfieldsT1.sh base_${subj}
+#Create Hippocampal subfields (FS6.0 version)
+#longHippoSubfieldsT1.sh base_${subj}
 
 #Create Hippocampal and Amygdala subfields with freesurfer dev version (better segmentation and uses .1mm ex vivo segmentation)
 segmentHA_T1_long.sh base_${subj}
