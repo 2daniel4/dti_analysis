@@ -1,14 +1,17 @@
 #!/bin/tcsh
 
+#Set path to general work station
+setenv home /Volumes/DANIEL
 
-setenv home /path/2/workstation
+#set path to fa images
+setenv FA /Volumes/DANIEL/dti_freesurf/dtrecon
 
 echo create tbss directory -----------------------------------------------------------------------------------------------------
 
+foreach cond (All Conditions)
 foreach subj (All Subjects)
 
-foreach cond (All Conditions for Each Subject)
-
+cd ${home}
 #Make Directiory for tbss analysis called tbss
 mkdir tbss
 cd ${home}/tbss/
@@ -16,7 +19,7 @@ cd ${home}/tbss/
 echo "subj = " ${subj} ", cond = " ${cond}
 
 #Copy masked FA images created from dt_recon to tbss folder with new name based on condition and subject number
-cp /path/2/FA/fa-masked.nii.gz ${home}/tbss/${cond}.${subj}.nii.gz
+cp ${FA}/fa-masked.nii.gz ${home}/tbss/${cond}.${subj}.nii.gz
 
 end
 
@@ -37,4 +40,4 @@ tbss_2_reg -T
 tbss_3_postreg -S
 
 #change input to threshold FA value of the skeleton (Usually between .2 and .3)
-tbss_4_prestats 0.25
+tbss_4_prestats 0.2
