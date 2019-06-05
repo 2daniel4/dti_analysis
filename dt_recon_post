@@ -1,0 +1,90 @@
+#!/bin/tcsh
+
+
+setenv FREESURFER_HOME /Applications/freesurfer_dev/
+source $FREESURFER_HOME/SetUpFreeSurfer.csh
+setenv SUBJECTS_DIR /Volumes/DANIEL/dti_freesurf/dtrecon
+setenv ANAT_DIR /Volumes/DANIEL/dti_freesurf/diffusion_recons
+
+
+foreach subj (AES101 AES102 AES104 AES107 AES108 AES109 AES110 AES111 AES113 AES114 AES115 AES116 AES117 AES118 AES119 AES120 AES121 AES122 AES123 AES124 AES126 AES127 AES129 AES130 AES133 AES134 AES136 AES137 AES138 AES139)
+foreach cond (Ex Rest)
+
+cd ${SUBJECTS_DIR}
+
+mkdir ${SUBJECTS_DIR}/${cond}.${subj}/stats
+
+#move anatomical volumes into dti space
+mri_vol2vol --mov ${SUBJECTS_DIR}/${cond}.${subj}/lowb.nii.gz --targ ${ANAT_DIR}/${subj}.${cond}/mri/aparc+aseg.mgz --inv --interp nearest --o ${SUBJECTS_DIR}/${cond}.${subj}/aparc+aseg2diff.nii.gz --reg ${SUBJECTS_DIR}/${cond}.${subj}/register.dat --no-save-reg
+mri_vol2vol --mov ${SUBJECTS_DIR}/${cond}.${subj}/lowb.nii.gz --targ ${ANAT_DIR}/${subj}.${cond}/mri/wmparc.mgz --inv --interp nearest --o ${ANAT_DIR}/${subj}.${cond}/mri/wmparc2diff.mgz --reg ${SUBJECTS_DIR}/${cond}.${subj}/register.dat --no-save-reg
+mri_vol2vol --mov ${SUBJECTS_DIR}/${cond}.${subj}/lowb.nii.gz --targ ${ANAT_DIR}/${subj}.${cond}/mri/aseg.mgz --inv --interp nearest --o ${SUBJECTS_DIR}/${cond}.${subj}/aseg2diff.nii.gz --reg ${SUBJECTS_DIR}/${cond}.${subj}/register.dat --no-save-reg
+mri_vol2vol --mov ${SUBJECTS_DIR}/${cond}.${subj}/lowb.nii.gz --targ ${ANAT_DIR}/${subj}.${cond}/mri/brainmask.mgz --inv --interp nearest --o ${ANAT_DIR}/${subj}.${cond}/mri/brainmask2diff.nii.gz --reg ${SUBJECTS_DIR}/${cond}.${subj}/register.dat --no-save-reg
+
+
+#Create hippocampal segmentations in diffusion space
+mri_vol2vol --mov ${SUBJECTS_DIR}/${cond}.${subj}/lowb.nii.gz --targ ${ANAT_DIR}/${subj}.${cond}/mri/lh.hippoAmygLabels-T1.long.v21.HBT.FSvoxelSpace.mgz --inv --interp nearest --o ${SUBJECTS_DIR}/${cond}.${subj}/lhipp2diff.nii.gz --reg ${SUBJECTS_DIR}/${cond}.${subj}/register.dat --no-save-reg
+mri_vol2vol --mov ${SUBJECTS_DIR}/${cond}.${subj}/lowb.nii.gz --targ ${ANAT_DIR}/${subj}.${cond}/mri/rh.hippoAmygLabels-T1.long.v21.HBT.FSvoxelSpace.mgz --inv --interp nearest --o ${SUBJECTS_DIR}/${cond}.${subj}/rhipp2diff.nii.gz --reg ${SUBJECTS_DIR}/${cond}.${subj}/register.dat --no-save-reg
+
+#creates a binary mask of body and head of hippocampus
+mri_binarize --i ${SUBJECTS_DIR}/${cond}.${subj}/lhipp2diff.nii.gz --match 226 --o ${SUBJECTS_DIR}/${cond}.${subj}/l_tail_hipp.nii.gz
+mri_binarize --i ${SUBJECTS_DIR}/${cond}.${subj}/rhipp2diff.nii.gz --match 226 --o ${SUBJECTS_DIR}/${cond}.${subj}/r_tail_hipp.nii.gz
+
+mri_binarize --i ${SUBJECTS_DIR}/${cond}.${subj}/lhipp2diff.nii.gz --match 231 --o ${SUBJECTS_DIR}/${cond}.${subj}/l_body_hipp.nii.gz
+mri_binarize --i ${SUBJECTS_DIR}/${cond}.${subj}/rhipp2diff.nii.gz --match 231 --o ${SUBJECTS_DIR}/${cond}.${subj}/r_body_hipp.nii.gz
+
+mri_binarize --i ${SUBJECTS_DIR}/${cond}.${subj}/lhipp2diff.nii.gz --match 226 231 --o ${SUBJECTS_DIR}/${cond}.${subj}/l_tail_body_hipp.nii.gz
+mri_binarize --i ${SUBJECTS_DIR}/${cond}.${subj}/rhipp2diff.nii.gz --match 226 231 --o ${SUBJECTS_DIR}/${cond}.${subj}/r_tail_body_hipp.nii.gz
+
+mri_binarize --i ${SUBJECTS_DIR}/${cond}.${subj}/lhipp2diff.nii.gz --match 232 --o ${SUBJECTS_DIR}/${cond}.${subj}/l_head_hipp.nii.gz
+mri_binarize --i ${SUBJECTS_DIR}/${cond}.${subj}/rhipp2diff.nii.gz --match 232 --o ${SUBJECTS_DIR}/${cond}.${subj}/r_head_hipp.nii.gz
+
+mri_binarize --i ${SUBJECTS_DIR}/${cond}.${subj}/lhipp2diff.nii.gz --match 231 232 --o ${SUBJECTS_DIR}/${cond}.${subj}/l_body_head_hipp.nii.gz
+mri_binarize --i ${SUBJECTS_DIR}/${cond}.${subj}/rhipp2diff.nii.gz --match 231 232 --o ${SUBJECTS_DIR}/${cond}.${subj}/r_body_head_hipp.nii.gz
+
+mri_binarize --i ${SUBJECTS_DIR}/${cond}.${subj}/lhipp2diff.nii.gz --match 226 231 232 --o ${SUBJECTS_DIR}/${cond}.${subj}/full_l_hipp.nii.gz
+mri_binarize --i ${SUBJECTS_DIR}/${cond}.${subj}/rhipp2diff.nii.gz --match 226 231 232 --o ${SUBJECTS_DIR}/${cond}.${subj}/full_r_hipp.nii.gz
+
+#Mask the images using the white matter 2 diffusion file.
+mri_mask ${SUBJECTS_DIR}/${cond}.${subj}/fa.nii.gz ${ANAT_DIR}/${subj}.${cond}/mri/brainmask2diff.nii.gz ${SUBJECTS_DIR}/${cond}.${subj}/fa-masked.nii.gz
+mri_mask ${SUBJECTS_DIR}/${cond}.${subj}/adc.nii.gz ${ANAT_DIR}/${subj}.${cond}/mri/brainmask2diff.nii.gz ${SUBJECTS_DIR}/${cond}.${subj}/adc-masked.nii.gz
+mri_mask ${SUBJECTS_DIR}/${cond}.${subj}/radialdiff.nii.gz ${ANAT_DIR}/${subj}.${cond}/mri/brainmask2diff.nii.gz ${SUBJECTS_DIR}/${cond}.${subj}/radialdiff-masked.nii.gz
+
+#create stats from various ROIs and place in individual stats folder
+
+cd ${SUBJECTS_DIR}/${cond}.${subj}/
+mkdir stats
+#Multiply by 1000 bc of sig fig issue (results are 10^-3
+
+#Subcortical-Segmentations
+#mri_segstats --seg ${SUBJECTS_DIR}/${cond}.${subj}/aseg2diff.nii.gz --ctab /Applications/freesurfer/FreeSurferColorLUT.txt --id 17 --id 18 --id 53 --id 54 --id 250 --id 255 --i ${SUBJECTS_DIR}/${cond}.${subj}/fa-masked.nii.gz --sum ${SUBJECTS_DIR}/${cond}.${subj}/stats/fa.stats
+
+#mri_segstats --seg ${SUBJECTS_DIR}/${cond}.${subj}/aseg2diff.nii.gz --mul 1000 --ctab /Applications/freesurfer/FreeSurferColorLUT.txt --id 17 --id 18 --id 53 --id 54 --id 250 --id 255 --i ${SUBJECTS_DIR}/${cond}.${subj}/adc-masked.nii.gz --sum ${SUBJECTS_DIR}/${cond}.${subj}/stats/adc.stats
+
+#mri_segstats --seg ${SUBJECTS_DIR}/${cond}.${subj}/aseg2diff.nii.gz --mul 1000 --ctab /Applications/freesurfer/FreeSurferColorLUT.txt --id 17 --id 18 --id 53 --id 54 --id 255 --i ${SUBJECTS_DIR}/${cond}.${subj}/radialdiff-masked.nii.gz --sum ${SUBJECTS_DIR}/${cond}.${subj}/stats/radialdiff.stats
+
+#Hippocampal-Segmentations
+#mri_segstats --seg ${SUBJECTS_DIR}/${cond}.${subj}/rhipp2diff.nii.gz --ctab /Applications/freesurfer_dev/FreeSurferColorLUT.txt --id 226 --id 231 --id 232 --i ${SUBJECTS_DIR}/${cond}.${subj}/fa-masked.nii.gz --sum ${SUBJECTS_DIR}/${cond}.${subj}/stats/rhipp.fa.stats
+
+#mri_segstats --seg ${SUBJECTS_DIR}/${cond}.${subj}/lhipp2diff.nii.gz --ctab /Applications/freesurfer_dev/FreeSurferColorLUT.txt --id 226 --id 231 --id 232 --i ${SUBJECTS_DIR}/${cond}.${subj}/fa-masked.nii.gz --sum ${SUBJECTS_DIR}/${cond}.${subj}/stats/lhipp.fa.stats
+
+#mri_segstats --seg ${SUBJECTS_DIR}/${cond}.${subj}/rhipp2diff.nii.gz --mul 1000 --ctab /Applications/freesurfer_dev/FreeSurferColorLUT.txt --id 226 --id 231 --id 232 --i ${SUBJECTS_DIR}/${cond}.${subj}/adc-masked.nii.gz --sum ${SUBJECTS_DIR}/${cond}.${subj}/stats/rhipp.adc.stats
+
+#mri_segstats --seg ${SUBJECTS_DIR}/${cond}.${subj}/lhipp2diff.nii.gz --mul 1000 --ctab /Applications/freesurfer_dev/FreeSurferColorLUT.txt --id 226 --id 231 --id 232 --i ${SUBJECTS_DIR}/${cond}.${subj}/adc-masked.nii.gz --sum ${SUBJECTS_DIR}/${cond}.${subj}/stats/lhipp.adc.stats
+
+
+#mri_segstats --seg ${SUBJECTS_DIR}/${cond}.${subj}/lhipp2diff.nii.gz --mul 1000 --ctab /Applications/freesurfer_dev/FreeSurferColorLUT.txt --id 226 --id 231 --id 232 --i ${SUBJECTS_DIR}/${cond}.${subj}/adc-masked.nii.gz --sum ${SUBJECTS_DIR}/${cond}.${subj}/stats/lhipp.adc.stats
+
+#mri_segstats --seg ${SUBJECTS_DIR}/${cond}.${subj}/rhipp2diff.nii.gz --mul 1000 --ctab /Applications/freesurfer_dev/FreeSurferColorLUT.txt --id 226 --id 231 --id 232 --i ${SUBJECTS_DIR}/${cond}.${subj}/radialdiff-masked.nii.gz --sum ${SUBJECTS_DIR}/${cond}.${subj}/stats/rhipp.radialdiff.stats
+
+#mri_segstats --seg ${SUBJECTS_DIR}/${cond}.${subj}/lhipp2diff.nii.gz --mul 1000 --ctab /Applications/freesurfer_dev/FreeSurferColorLUT.txt --id 226 --id 231 --id 232 --i ${SUBJECTS_DIR}/${cond}.${subj}/radialdiff-masked.nii.gz --sum ${SUBJECTS_DIR}/${cond}.${subj}/stats/lhipp.radialdiff.stats
+
+end
+
+end
+
+#create a summary statistics sheet
+cd ${SUBJECTS_DIR}
+
+/usr/bin/python $FREESURFER_HOME/bin/asegstats2table --skip --subjects Ex.AES101 Ex.AES102 Ex.AES104    Ex.AES107    Ex.AES108    Ex.AES109    Ex.AES110    Ex.AES111 Ex.AES113 Ex.AES114 Ex.AES115 Ex.AES116    Ex.AES117    Ex.AES118    Ex.AES119    Ex.AES120    Ex.AES121 Ex.AES122 Ex.AES123 Ex.AES124 Ex.AES126    Ex.AES127    Ex.AES129    Ex.AES130    Ex.AES133 Ex.AES134 Ex.AES136    Ex.AES137 Ex.AES138 Ex.AES139    Rest.AES101    Rest.AES102    Rest.AES104    Rest.AES107    Rest.AES108    Rest.AES109    Rest.AES110    Rest.AES111    Rest.AES113    Rest.AES114    Rest.AES115    Rest.AES116    Rest.AES117    Rest.AES118    Rest.AES119    Rest.AES120    Rest.AES121    Rest.AES122    Rest.AES123    Rest.AES124    Rest.AES126    Rest.AES127    Rest.AES129    Rest.AES130    Rest.AES133    Rest.AES134    Rest.AES136    Rest.AES137    Rest.AES138    Rest.AES139 --stats adc.stats --meas mean --tablefile ADC_stats.txt
+
+/usr/bin/python $FREESURFER_HOME/bin/asegstats2table --skip --subjects Ex.AES101 Ex.AES102 Ex.AES104    Ex.AES107    Ex.AES108    Ex.AES109    Ex.AES110    Ex.AES111 Ex.AES113 Ex.AES114 Ex.AES115 Ex.AES116    Ex.AES117    Ex.AES118    Ex.AES119    Ex.AES120    Ex.AES121 Ex.AES122 Ex.AES123 Ex.AES124 Ex.AES126    Ex.AES127    Ex.AES129    Ex.AES130    Ex.AES133 Ex.AES134 Ex.AES136    Ex.AES137 Ex.AES138 Ex.AES139    Rest.AES101    Rest.AES102    Rest.AES104    Rest.AES107    Rest.AES108    Rest.AES109    Rest.AES110    Rest.AES111    Rest.AES113    Rest.AES114    Rest.AES115    Rest.AES116    Rest.AES117    Rest.AES118    Rest.AES119    Rest.AES120    Rest.AES121    Rest.AES122    Rest.AES123    Rest.AES124    Rest.AES126    Rest.AES127    Rest.AES129    Rest.AES130    Rest.AES133    Rest.AES134    Rest.AES136    Rest.AES137    Rest.AES138    Rest.AES139 --stats fa.stats --meas mean --tablefile FA_stats.txt
