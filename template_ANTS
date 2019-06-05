@@ -1,0 +1,45 @@
+#!/bin/tcsh -f
+#SBATCH --time=300:00:00
+#SBATCH --mem=24000
+#SBATCH --output=results
+#SBATCH --cores=6
+
+#slurm batch submission 
+
+setenv home /Volumes/DANIEL/dti_FDT_FA_freesurf_MCIP/ANTS/
+
+
+#Go to folder and make directory for analysis
+cd ${home}
+mkdir FAtemplate
+
+
+#Create FA template for FA registration to eachother using ANTS
+
+${ANTSPATH}/antsMultivariateTemplateConstruction2.sh \
+-d 3 \
+-o FAtemplate/T_ \
+-i 4 \
+-k 1 \
+-g 0.2 \
+-j 2 \
+-c 2 \
+-n 1 \
+-r 1 \
+-m CC \
+*.nii.gz
+
+#Use ANTS SyN non-linear registration to warp all of the FA images to the template created
+
+foreach subj (AES101 AES102 AES104 AES107 AES108 AES109 AES110 AES111 AES113 AES114 AES115 AES116 AES117 AES118 AES119 AES120 AES121 AES122 AES123 AES124 AES126 AES127 AES129 AES130 AES133 AES134 AES136 AES137 AES138 AES139)
+
+foreach cond (Ex Rest)
+
+antsRegistrationSyN.sh -d 3 -f ${home}FA/FAtemplate/T_template.nii.gz -m ${home}FA/${cond}.${subj}_FA.nii.gz -o FA2FAtemp${cond}.${subj}
+
+#Register FA to T1 template
+antsRegistrationSyN.sh -d 3 -f  -m  -o
+
+
+end
+end
