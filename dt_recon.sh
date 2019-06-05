@@ -46,7 +46,7 @@ echo "subj = " ${subj} ", cond = " ${cond}
 mkdir /${SUBJECTS_DIR}/${subj}_${cond}
 cd /${SUBJECTS_DIR}/${subj}_${cond}
 
-
+#Move DICOMS into folder to be processed into 3D image
 cp ${DICOMS}/*.dcm /${SUBJECTS_DIR}/${subj}_${cond}
 
 #May need to copy surf, label, and mri folder from anatomical freesurfer (recon-all) output
