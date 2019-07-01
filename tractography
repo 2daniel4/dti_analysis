@@ -1,0 +1,20 @@
+#!/bin/tcsh -f
+#SBATCH --time=300:00:00
+#SBATCH --mem=24000
+#SBATCH --output=results
+#SBATCH --cores=6
+
+#Must set SUBJECTS_DIR to where data is or else uses what was set up when installing freesurfer
+setenv SUBJECTS_DIR /homes/dcallow/diffusion_recons
+
+#Must set up configuration file - see trac-all-config-file in dti_analysis compository
+#In configuration file can change number of subject to perform analysis on each cluster
+
+#RUN FIRST
+trac-all -preproc -c /homes/dcallow/dmrirc.long.MCIP.example.sh
+
+trac-all -bedp -c /homes/dcallow/dmrirc.long.MCIP.example.sh
+
+trac-all -path -c /homes/dcallow/dmrirc.long.MCIP.example.sh
+
+trac-all -stat -c /homes/dcallow/dmrirc.long.MCIP.example.sh
