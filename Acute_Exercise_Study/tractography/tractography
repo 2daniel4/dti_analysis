@@ -4,17 +4,27 @@
 #SBATCH --output=results
 #SBATCH --cores=6
 
+setenv FREESURFER_HOME /Applications/freesurfer
+source $FREESURFER_HOME/SetUpFreeSurfer.csh
+
+
 #Must set SUBJECTS_DIR to where data is or else uses what was set up when installing freesurfer
-setenv SUBJECTS_DIR /homes/dcallow/diffusion_recons
+setenv SUBJECTS_DIR /Volumes/DANIEL/dti_freesurfer/diffusion_recons
+
+foreach subj (AES101 AES102 AES104 AES107 AES108 AES109 AES110 AES111 AES113 AES114 AES115 AES116 AES117 AES118 AES119 AES120 AES121 AES122 AES123 AES124 AES126 AES127 AES129 AES130 AES133 AES134 AES136 AES137 AES138 AES139)
+foreach cond (Ex Rest)
+rm /Volumes/DANIEL/dti_freesurf/trac/${cond}.${subj}.long.base_${subj}/scripts/IsRunning.trac
+end
+end
 
 #Must set up configuration file - see trac-all-config-file in dti_analysis compository
 #In configuration file can change number of subject to perform analysis on each cluster
 
 #RUN FIRST
-trac-all -preproc -c /homes/dcallow/dmrirc.long.MCIP.example.sh
+/Volumes/DANIEL/trac-all -prep -c /Volumes/DANIEL/dmrirc.long.example.sh
 
-trac-all -bedp -c /homes/dcallow/dmrirc.long.MCIP.example.sh
+#/Volumes/DANIEL/trac-all -bedp -c /Volumes/DANIEL/dmrirc.long.example.sh
 
-trac-all -path -c /homes/dcallow/dmrirc.long.MCIP.example.sh
+#/Volumes/DANIEL/trac-all -path -c /Volumes/DANIEL/dmrirc.long.example.sh
 
-trac-all -stat -c /homes/dcallow/dmrirc.long.MCIP.example.sh
+#/Volumes/DANIEL/trac-all -stat -c /Volumes/DANIEL/dmrirc.long.example.sh
