@@ -1,0 +1,38 @@
+#!/usr/bin/env Rscript  
+
+#install.packages("readxl")
+#install.packages("lsr")
+#install.packages("PairedData")
+#install.packages("ggplot2")
+#load readxl
+library("dplyr")
+library("readxl")
+library("lsr")
+library("PairedData")
+library("ggplot2")
+library(ggpubr)
+
+getwd()
+#set working directory
+setwd('/Volumes/DANIEL')
+
+#Read in data
+diffusion_data = read_excel("ForDaniel.SubjectsAvailable.MCWscan2DTI.xlsx", sheet = "Sheet2")
+
+#Make genotype and physical activity levels a factor
+diffusion_data$APOE4=factor(diffusion_data$APOE4)
+diffusion_data$PA=factor(diffusion_data$PA)
+diffusion_data$PA_APOE4 = factor(diffusion_data$PA_APOE4)
+
+
+
+# Run simple linear regression
+mod1=lm(diffusion_data$bil_md~diffusion_data$PA+diffusion_data$APOE4)
+summary(mod1)
+
+
+# Boxplot graph of bilateral diffusion values by genotype and physical activity
+ggboxplot(diffusion_data, x = "APOE4", y="bil_md", color = "PA")
+
+# Check regression summary between hippocampal diffusivity and age
+summary(lm(diffusion_data$bil_md~diffusion_data$age))
