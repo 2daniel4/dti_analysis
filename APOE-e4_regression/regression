@@ -26,13 +26,13 @@ diffusion_data$PA_APOE4 = factor(diffusion_data$PA_APOE4)
 
 
 
-# Run simple linear regression
-mod1=lm(diffusion_data$bil_md~diffusion_data$PA+diffusion_data$APOE4)
+# Run multiple linear regression to see if Physical activity and APOE-e4 interact on hippocampal diffusion.
+mod1=lm(diffusion_data$bil_md~diffusion_data$PA*diffusion_data$APOE4)
 summary(mod1)
 
 
 # Boxplot graph of bilateral diffusion values by genotype and physical activity
 ggboxplot(diffusion_data, x = "APOE4", y="bil_md", color = "PA")
 
-# Check regression summary between hippocampal diffusivity and age
+# Check association between hippocampal diffusivity and age
 summary(lm(diffusion_data$bil_md~diffusion_data$age))
