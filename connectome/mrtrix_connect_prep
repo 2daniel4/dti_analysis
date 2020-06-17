@@ -1,0 +1,27 @@
+#!/bin/tcsh -f
+#SBATCH --time=300:00:00
+#SBATCH --mem=24000
+#SBATCH --output=results
+#SBATCH --cores=6
+# Above sets up bswift slurm job submission
+
+# Set up mrtrix and ants on bswift
+set path = ( $path /data/bswift-0/software/ANTs-2019-11/MRtrix3Tissue/bin)
+set path = ( $path /data/bswift-0/software/ANTs-2019-11/ANTs-2.1.0-Linux/bin)
+
+
+#Must set SUBJECTS_DIR to where data is or else uses what was set up when installing freesurfer
+setenv SUBJECTS_DIR /data/bswift-1/dcallow
+
+@ linenum = 1
+
+# Set the subject number
+set subj= ($argv[1]) \
+
+# Dicom to Nifti file
+# Go to individual diffusion dicom directory file
+cd ${SUBJECTS_DIR}/CONNECTOME/dwi/${subj}/T1w/Diffusion
+# convert to mrtrix .mif format and ad bvals and bvecs
+# Calculate multitissue response functions with dhollander 
+mrconvert -force -fslgrad bvecs bvals data.nii.gz dwi.mif
+dwi2response -force dhollander dwi.mif wm_response.txt gm_response.txt csf_response.txt
