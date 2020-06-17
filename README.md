@@ -5,3 +5,5 @@
 # Many of the subcortical segmentation codes from freesurfer can take a LONG time to run
 # Therefore I have included the ability to paralize and submit multiple subjects at once to a supercomputer if you have access to one.
 # The job submission is scripted in SLURM.
+
+# I have included some scripts to create connectomes and process HARDI data from the Human Connectome Project
