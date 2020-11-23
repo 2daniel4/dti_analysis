@@ -27,4 +27,4 @@ set subj= ($argv[1]) \
 cd SUBJECTS_DIR/${subj}/dwi
 
 # Calculate FOD (white matter), gray matter, and CSF image from mean response
-ss3t_csd_beta1 dwi_corrected_upsampled.mif response_wm.txt wmfod.mif response_gm.txt gm.mif response_csf.txt csf.mif -mask dwi_mask_upsampled.mif
+ss3t_csd_beta1 dwi_corrected_upsampled.mif ${SUBJECTS_DIR}/response/csf/average_response_wm.txt wmfod.mif ${SUBJECTS_DIR}/response/csf/average_response_gm.txt gm.mif ${SUBJECTS_DIR}/response/csf/average_response_csf.txt csf.mif -mask dwi_mask_upsampled.mif
