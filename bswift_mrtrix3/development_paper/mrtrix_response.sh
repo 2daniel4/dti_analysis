@@ -23,9 +23,11 @@ set echo
 # sets the variable ${subj} equal to the input value we provide (see the above note about the -f in shebang)
 set subj= ($argv[1]) \
 
-# Make directory for each subject and a dwi folder for the analysis
-mkdir SUBJECTS_DIR/${subj}/
-mkdir SUBJECTS_DIR/${subj}/dwi
 
-# Go to dwi folder (will do all processing here)
-cd SUBJECTS_DIR/${subj}/dwi
+# Calculate average response
+cd ${SUBJECTS_DIR}/response/wm
+responsemean *.txt average_response_wm.txt
+cd ${SUBJECTS_DIR}/response/csf
+responsemean *.txt average_response_csf.txt
+cd ${SUBJECTS_DIR}/response/gm
+responsemean *.txt average_response_gm.txt
