@@ -66,5 +66,13 @@ tensor2metric -force -mask dwi_mask_upsampled.mif -fa FA.nii.gz tensor.mif
 # Create response function (This will allow us to determine the amount of diffusion signal coming from different tissue types within each voxel)
 dwi2response -force dhollander dwi_corrected_upsampled.mif wm_response.txt gm_response.txt csf_response.txt
 
+# Set up folder and copy over response files of every subject (the mkdir will fail after the first time the script runs if you are running in parallel however that shouldn't matter)
+mkdir SUBJECTS_DIR/response
+mkdir SUBJECTS_DIR/response/wm
+mkdir SUBJECTS_DIR/response/gm
+mkdir SUBJECTS_DIR/response/csf
+cp wm_response.txt SUBJECTS_DIR/response/wm/${subj}_wm_response.txt
+cp gm_response.txt SUBJECTS_DIR/response/gm/${subj}_gm_response.txt
+cp csf_response.txt SUBJECTS_DIR/response/csf/${subj}_csf_response.txt
 
 
