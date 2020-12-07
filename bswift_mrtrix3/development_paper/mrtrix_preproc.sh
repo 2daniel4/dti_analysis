@@ -24,17 +24,17 @@ set echo
 set subj= ($argv[1]) \
 
 # Make directory for each subject and a dwi folder for the analysis
-mkdir SUBJECTS_DIR/${subj}/
-mkdir SUBJECTS_DIR/${subj}/dwi
+mkdir ${SUBJECTS_DIR}/${subj}/
+mkdir ${SUBJECTS_DIR}/${subj}/dwi
 
 # Go to dwi folder (will do all processing here)
-cd SUBJECTS_DIR/${subj}/dwi
+cd ${SUBJECTS_DIR}/${subj}/dwi
 
 # Go to subjects dicom folder and convert to mrtrix diffusion image format in current analysis location (should include bval/bvec information in header - also hopefully phase encoding direction)
 mrcovert -force ${SUBJECTS_DIR}/location/folder/with/dwi/dicoms dwi.mif
 
 
-cp ${SUBJECTS_DIR}/location/folder/with/dwi/dicoms/dwi.mif 
+
 # Denoise and unring the dwi image
 # NOTE: Denoising and Gibbs ringing removal (“unringing”) are performed prior to any other processing steps: most other processing steps would be invalidated if done in a different order.
 dwidenoise -force dwi.mif dwi_denoise.mif
@@ -45,7 +45,7 @@ dwifslpreproc -force -rpe_none dwi_denoised_unringed.mif dwi_prep.mif
 # Create mask for field correction
 dwi2mask -force dwi_prep.mif dwi_mask.mif
 
-# B0 inhomogeneity correction using ANTS
+# B1 inhomogeneity correction using ANTS
 dwibiascorrect -force -mask dwi_mask.mif ants dwi_prep.mif dwi_corrected.mif
 
 # Regrid data to 1.5 x 1.5 x 1.5 mm^3 resolution
