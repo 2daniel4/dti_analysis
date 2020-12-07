@@ -21,7 +21,7 @@ setenv SUBJECTS_DIR /data/bswift-1/dcallow
 # Echo commands/output
 set echo
 # sets the variable ${subj} equal to the input value we provide (see the above note about the -f in shebang)
-set subj= ($argv[1]) \
+#set subj= ($argv[1]) \
 
 
 # Calculate average response
