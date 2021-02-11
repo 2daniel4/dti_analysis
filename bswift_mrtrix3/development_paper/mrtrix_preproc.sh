@@ -11,6 +11,7 @@
 # Line 4 - name of file with command output
 # Line 5 - the number of cores/nodes requested
 
+#If using bswift should use module load of Python and gcc 
 # Set paths to mrtrix and ANTS software.
 set path = ( $path /data/bswift-0/software/ANTs-2019-11/MRtrix3Tissue/bin)
 set path = ( $path /data/bswift-0/software/ANTs-2019-11/ANTs-2.1.0-Linux/bin)
