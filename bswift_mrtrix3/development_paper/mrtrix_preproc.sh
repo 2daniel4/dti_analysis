@@ -15,6 +15,11 @@
 # Set paths to mrtrix and ANTS software.
 set path = ( $path /data/bswift-0/software/ANTs-2019-11/MRtrix3Tissue/bin)
 set path = ( $path /data/bswift-0/software/ANTs-2019-11/ANTs-2.1.0-Linux/bin)
+source /data/bswift-0/software/gcc-6.3.0/load_gcc_6.3.0.sh
+
+export LD_LIBRARY_PATH=/data/bswift-0/software/openblas-0.3.10/OpenBLAS-0.3.10:$LD_LIBRARY_PATH
+
+export PATH=/data/bswift-0/software/fsl-6.0.4/bin:$PATH
 
 #Set subjects directory (Where you will access stored data)
 setenv SUBJECTS_DIR /data/bswift-1/dcallow
