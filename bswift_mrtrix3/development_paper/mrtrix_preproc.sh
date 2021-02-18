@@ -11,15 +11,16 @@
 # Line 4 - name of file with command output
 # Line 5 - the number of cores/nodes requested
 
-#If using bswift should use module load of Python and gcc 
+#If using bswift should use module load Python beforehad
 # Set paths to mrtrix and ANTS software.
 set path = ( $path /data/bswift-0/software/ANTs-2019-11/MRtrix3Tissue/bin)
 set path = ( $path /data/bswift-0/software/ANTs-2019-11/ANTs-2.1.0-Linux/bin)
+
+# Set up some dependencies that are located on bswift - this may not be necessary on other systems
 source /data/bswift-0/software/gcc-6.3.0/load_gcc_6.3.0.sh
-
-export LD_LIBRARY_PATH=/data/bswift-0/software/openblas-0.3.10/OpenBLAS-0.3.10:$LD_LIBRARY_PATH
-
-export PATH=/data/bswift-0/software/fsl-6.0.4/bin:$PATH
+setenv FSLDIR /data/bswift-0/software/fsl-6.0.4
+setenv LD_LIBRARY_PATH /data/bswift-0/software/openblas-0.3.10/OpenBLAS-0.3.10:$LD$
+setenv PATH /data/bswift-0/software/fsl-6.0.4/bin:$PATH
 
 #Set subjects directory (Where you will access stored data)
 setenv SUBJECTS_DIR /data/bswift-1/dcallow
@@ -42,7 +43,7 @@ mrcovert -force ${SUBJECTS_DIR}/location/folder/with/dwi/dicoms dwi.mif
 
 
 # Denoise and unring the dwi image
-# NOTE: Denoising and Gibbs ringing removal (“unringing”) are performed prior to any other processing steps: most other processing steps would be invalidated if done in a different order.
+# NOTE: Denoising and Gibbs ringing removal (“unringing”) are performed prior to any other processing steps: IMPORTANT! most other processing steps would be invalidated if done in a different order.
 dwidenoise -force dwi.mif dwi_denoise.mif
 mrdegibbs -force dwi_denoise.mif dwi_denoised_unringed.mif
 
@@ -72,7 +73,7 @@ tensor2metric -force -mask dwi_mask_upsampled.mif -fa FA.nii.gz tensor.mif
 # Create response function (This will allow us to determine the amount of diffusion signal coming from different tissue types within each voxel)
 dwi2response -force dhollander dwi_corrected_upsampled.mif wm_response.txt gm_response.txt csf_response.txt
 
-# Set up folder and copy over response files of every subject (the mkdir will fail after the first time the script runs if you are running in parallel however that shouldn't matter)
+# Set up folder and copy over response files of every subject (the mkdir will fail after the first time the script runs if you are running in parallel)
 mkdir SUBJECTS_DIR/response
 mkdir SUBJECTS_DIR/response/wm
 mkdir SUBJECTS_DIR/response/gm
