@@ -4,4 +4,5 @@
 2. mrtrix_response.sh (Create average response function)
 3. mrtrix_calculate.sh (Create normalized WM, GM, and CSF images)
 
-# These images can then be used in later image processing methods (tbss, VBA, ROI, etc....)
+The steps in this code allow you to take diffusion images from dicom - > diffusion tensor based images while going through best preprocessing steps as outline by mrtrix3 (https://mrtrix.readthedocs.io/en/latest/)
+These images can then be used in later image processing and anlysis methods (tbss, VBA, ROI, etc....)
