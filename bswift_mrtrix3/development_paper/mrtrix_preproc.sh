@@ -19,7 +19,7 @@ set path = ( $path /data/bswift-0/software/ANTs-2019-11/ANTs-2.1.0-Linux/bin)
 # Set up some dependencies that are located on bswift - this may not be necessary on other systems
 source /data/bswift-0/software/gcc-6.3.0/load_gcc_6.3.0.sh
 setenv FSLDIR /data/bswift-0/software/fsl-6.0.4
-setenv LD_LIBRARY_PATH /data/bswift-0/software/openblas-0.3.10/OpenBLAS-0.3.10:$LD$
+setenv LD_LIBRARY_PATH /data/bswift-0/software/openblas-0.3.10/OpenBLAS-0.3.10:$LD_LIBRARY_PATH
 setenv PATH /data/bswift-0/software/fsl-6.0.4/bin:$PATH
 
 #Set subjects directory (Where you will access stored data)
